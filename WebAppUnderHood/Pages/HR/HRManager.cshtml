@@ -1,0 +1,13 @@
+﻿@page
+@model WebAppUnderHood.Pages.HR.HRManagerModel
+@{
+}
+<h2>Hr manager page</h2>
+<ul>
+    @foreach (var item in Model.WeatherForeCastItems)
+    {
+        <li>
+            @item.Date.ToLongDateString()- @item.Summary
+        </li>
+    }
+</ul>
