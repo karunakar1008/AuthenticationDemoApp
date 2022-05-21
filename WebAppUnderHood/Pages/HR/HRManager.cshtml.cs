@@ -29,13 +29,17 @@ namespace WebAppUnderHood.Pages.HR
 
         public async Task OnGet()
         {
-            //get token from session
+            WeatherForeCastItems = await InvokeEndPoint<List<WeatherForeCastDTO>>("OurWebAPI", "WeatherForecast");
+        }
+        private async Task<T> InvokeEndPoint<T>(string clientWebApiName,string url)
+        {
             JwtToken token = null;
 
+            //get token from session
             var strTokenObj = HttpContext.Session.GetString("access_token");
             if (string.IsNullOrWhiteSpace(strTokenObj))
             {
-                token =await Authenticate();
+                token = await Authenticate();
             }
             else
                 token = JsonConvert.DeserializeObject<JwtToken>(strTokenObj);
@@ -43,11 +47,10 @@ namespace WebAppUnderHood.Pages.HR
             if (token == null || string.IsNullOrWhiteSpace(token.AccessToken) || token.ExpiresAt <= DateTime.UtcNow)
                 token = await Authenticate();
 
-            var httpClient = HttpClientFactory.CreateClient("OurWebAPI");
+            var httpClient = HttpClientFactory.CreateClient(clientWebApiName);
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
-            WeatherForeCastItems = await httpClient.GetFromJsonAsync<List<WeatherForeCastDTO>>("WeatherForecast");
+           return await httpClient.GetFromJsonAsync<T>(url);
         }
-
         private async Task<JwtToken> Authenticate()
         {
             var httpClient = HttpClientFactory.CreateClient("OurWebAPI");
