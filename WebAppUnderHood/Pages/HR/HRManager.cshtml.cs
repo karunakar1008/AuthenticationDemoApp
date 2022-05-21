@@ -53,8 +53,10 @@ namespace WebAppUnderHood.Pages.HR
         }
         private async Task<JwtToken> Authenticate()
         {
+            var userName = HttpContext.Session.GetString("user_name");
+            var userPassword = HttpContext.Session.GetString("user_password");
             var httpClient = HttpClientFactory.CreateClient("OurWebAPI");
-            var result = await httpClient.PostAsJsonAsync("auth", new Credential { UserName = "admin", Password = "password" });
+            var result = await httpClient.PostAsJsonAsync("auth", new Credential { UserName =userName, Password = userPassword });
             result.EnsureSuccessStatusCode();
             string strJwt = await result.Content.ReadAsStringAsync();
             HttpContext.Session.SetString("access_token", strJwt);
