@@ -51,6 +51,12 @@ namespace WebAppUnderHood
             services.AddHttpClient("OurWebAPI", client => { 
                 client.BaseAddress = new Uri("https://localhost:44325/"); 
             });
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromHours(8);
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,7 +79,7 @@ namespace WebAppUnderHood
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
