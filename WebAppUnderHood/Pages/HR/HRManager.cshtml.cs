@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using WebAppUnderHood.Authorization;
 using WebAppUnderHood.DTO;
+using WebAppUnderHood.Models;
 
 namespace WebAppUnderHood.Pages.HR
 {
@@ -26,6 +29,11 @@ namespace WebAppUnderHood.Pages.HR
         public async Task OnGet()
         {
             var httpClient=HttpClientFactory.CreateClient("OurWebAPI");
+           var result= await httpClient.PostAsJsonAsync("auth", new Credential {UserName="admin",Password="password" });
+            result.EnsureSuccessStatusCode();
+            string strJwt = await result.Content.ReadAsStringAsync();
+            var token=JsonConvert.DeserializeObject<JwtToken>(strJwt);
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
             WeatherForeCastItems= await httpClient.GetFromJsonAsync<List<WeatherForeCastDTO>>("WeatherForecast");
         }
     }

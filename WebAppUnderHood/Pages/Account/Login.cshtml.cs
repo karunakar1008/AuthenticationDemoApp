@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebAppUnderHood.Models;
 
 namespace WebAppUnderHood.Pages.Account
 {
@@ -42,16 +43,5 @@ namespace WebAppUnderHood.Pages.Account
             return Page();
         }
     }
-    public class Credential
-    {
-        [Required]
-        public string UserName { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Display(Name = "Remember Me")]
-        public bool RememberMe { get; set; }
-    }
+    
 }
